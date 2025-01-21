@@ -1,0 +1,113 @@
+package com.ApplicationStockMarket.Service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import com.ApplicationStockMarket.Entity.CompanyEntry;
+import com.ApplicationStockMarket.Entity.StockUser;
+import com.ApplicationStockMarket.Repository.StockUserRepository;
+
+
+@Component
+public class StockUserService {
+	
+	
+	   @Autowired
+	    private JWTService jwtService;
+
+	    @Autowired
+	    private AuthenticationManager authManager;
+	
+	@Autowired
+	StockUserRepository stockUserRepository;
+	
+	public StockUser addUser(StockUser stockUser) {
+		
+		StockUser s=stockUserRepository.save(stockUser);
+		return s;
+	}
+
+    //private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+   /* public StockUser register(StockUser user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        stockUserRepository.save(user);
+        return user;
+    }
+    */
+    
+    
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    public StockUser register(StockUser user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        stockUserRepository.save(user);
+        return user;
+    }
+
+    public String verify(StockUser user) {
+        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(user.getUserName());
+        } else {
+            return "fail";
+        }
+    }
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+   	public List<StockUser> getUserEntries() {
+   		return stockUserRepository.findAll();
+   	}
+   	
+   	public boolean postUserEntry(StockUser user){
+   		//user.setDate(LocalDateTime.now());
+   		//journalEntry2.setId("1");
+   		stockUserRepository.save(user);
+   		return true;
+   	}
+   	public boolean postNewUserEntry(StockUser user){
+   		//user.setDate(LocalDateTime.now());
+   		//journalEntry2.setId("1");
+   		 user.setPassword(passwordEncoder.encode(user.getPassword()));
+   		stockUserRepository.save(user);
+   		return true;
+   	}
+   	
+   	public StockUser putUserEntry(StockUser user,String name) {
+   		StockUser oldUser=stockUserRepository.findByUserName(name);
+   		oldUser.setUserName(user.getUserName());
+   		oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+   		stockUserRepository.save(oldUser);
+   		return oldUser;
+   		
+   	}
+   	public boolean deleteUserEntry(String name) {
+   		StockUser oldUser=stockUserRepository.findByUserName(name);
+   		List<CompanyEntry> entries=oldUser.getCompanyStockPriceEntries();
+   		for(int i=0;i<entries.size();i++) {
+   			
+   			
+   			entries.remove(i);
+   		}
+   		
+   		stockUserRepository.deleteByUserName(name);
+   		
+   		return true;
+   	}
+   	public StockUser findByUserName(String userName) {
+   	        return stockUserRepository.findByUserName(userName);
+   	    }
+   	public List<CompanyEntry> getCompanyEntries(String name){ 
+   		StockUser oldUser=stockUserRepository.findByUserName(name);
+   		return oldUser.getCompanyStockPriceEntries();
+   	}
+   	
+
+}
+
+
+
