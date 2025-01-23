@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.ApplicationStockMarket.Entity.CompanyEntry;
 import com.ApplicationStockMarket.Entity.StockUser;
 import com.ApplicationStockMarket.Repository.StockUserRepository;
@@ -63,7 +65,7 @@ public class StockUserService {
    		return stockUserRepository.findAll();
    	}
    	
-   	public boolean postUserEntry(StockUser user){
+  public boolean postUserEntry(StockUser user){
    		//user.setDate(LocalDateTime.now());
    		//journalEntry2.setId("1");
    		stockUserRepository.save(user);
@@ -77,7 +79,9 @@ public class StockUserService {
    		return true;
    	}
    	
-   	public StockUser putUserEntry(StockUser user,String name) {
+   	public StockUser putUserEntry(StockUser user) {
+   	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		oldUser.setUserName(user.getUserName());
    		oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -85,7 +89,9 @@ public class StockUserService {
    		return oldUser;
    		
    	}
-   	public boolean deleteUserEntry(String name) {
+   	public boolean deleteUserEntry() {
+   	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		List<CompanyEntry> entries=oldUser.getCompanyStockPriceEntries();
    		for(int i=0;i<entries.size();i++) {
@@ -101,7 +107,9 @@ public class StockUserService {
    	public StockUser findByUserName(String userName) {
    	        return stockUserRepository.findByUserName(userName);
    	    }
-   	public List<CompanyEntry> getCompanyEntries(String name){ 
+   	public List<CompanyEntry> getCompanyEntries(){ 
+   	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		return oldUser.getCompanyStockPriceEntries();
    	}
