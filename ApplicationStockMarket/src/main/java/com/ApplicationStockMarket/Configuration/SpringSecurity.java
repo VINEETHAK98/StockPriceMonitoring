@@ -82,7 +82,7 @@ public class SpringSecurity {
 
 			http.csrf(customizer -> customizer.disable())
 					.authorizeHttpRequests(request -> request
-							.requestMatchers("/public/**", "/student/**","/user/**").permitAll()
+							.requestMatchers("/public/**", "/student/**").permitAll()
 			                .requestMatchers("/journal/**").authenticated()
 			                .requestMatchers("/admin/**").hasAuthority("Admin")
 							.anyRequest().authenticated())

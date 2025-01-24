@@ -25,7 +25,7 @@ public class CompanyEntry {
 	  @Id
       private ObjectId id;
       @NonNull
-      private String CompanyName;
+      private String companyName;
 
       @NonNull
       private Double setPrice;

@@ -41,7 +41,7 @@ public class CompanyEntryService {
 	*/
 	
 	
-		@Transactional
+		//@Transactional
 	public CompanyEntry postCompanyEntry(CompanyEntry companyEntry) {
 	       // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	       // String userName = authentication.getName();

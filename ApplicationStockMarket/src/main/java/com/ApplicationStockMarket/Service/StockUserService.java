@@ -156,6 +156,7 @@ public class StockUserService {
 	   		oldUser.getCompanyStockPriceEntries();
 		CompanyEntry newCompanyEntry=companyEntryService.postCompanyEntry(companyEntry);
 		oldUser.getCompanyStockPriceEntries().add(newCompanyEntry);
+		stockUserRepository.save(oldUser);
   		return oldUser.getCompanyStockPriceEntries();
   	}
 	public List<CompanyEntry> updateCompanyEntries(ObjectId id,CompanyEntry companyEntry ){ 
@@ -163,14 +164,16 @@ public class StockUserService {
 	       String name = authentication.getName();
 	   		StockUser oldUser=stockUserRepository.findByUserName(name);
 	   		List<CompanyEntry> list=oldUser.getCompanyStockPriceEntries();
-	   		for(int i=0;i<list.size();i++) {
+	   		/*for(int i=0;i<list.size();i++) {
 	   			if(list.get(i).getId()==id) {
 	   				companyEntryService.putCompanyEntry(id,companyEntry);
 	   				break;
 	   			}
-	   		}
+	   		}*/
+	   		companyEntryService.putCompanyEntry(id,companyEntry);
+	   		stockUserRepository.save(oldUser);
 		//CompanyEntry newCompanyEntry=companyEntryService.putCompanyEntry(id,companyEntry);
- 		return oldUser.getCompanyStockPriceEntries();
+ 		return stockUserRepository.findByUserName(name).getCompanyStockPriceEntries();
  	}
 	public List<CompanyEntry> deleateCompanyEntries(ObjectId id,CompanyEntry companyEntry ){ 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -183,6 +186,7 @@ public class StockUserService {
 	   				break;
 	   			}
 	   		}
+	   		stockUserRepository.save(oldUser);
 		//CompanyEntry newCompanyEntry=companyEntryService.putCompanyEntry(id,companyEntry);
  		return oldUser.getCompanyStockPriceEntries();
  	}

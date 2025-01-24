@@ -35,12 +35,12 @@ public class StockUserController {
 	@PostMapping("/addCompanyEntry")
     public ResponseEntity<?> addnewCompanyEntry(@RequestBody CompanyEntry companyEntry) {
 
-        return new ResponseEntity(companyEntryService.postCompanyEntry(companyEntry),HttpStatus.FOUND);
+        return new ResponseEntity(stockUserService.addCompanyEntries(companyEntry),HttpStatus.FOUND);
     }
-	@PutMapping("/addCompanyEntry/{entryid}")
+	@PutMapping("/updateCompanyEntry/{entryid}")
     public ResponseEntity<?> changeCompanyEntry(@PathVariable ObjectId entryid,@RequestBody CompanyEntry companyEntry) {
 
-        return new ResponseEntity(companyEntryService.putCompanyEntry(entryid,companyEntry),HttpStatus.FOUND);
+        return new ResponseEntity(stockUserService.updateCompanyEntries(entryid,companyEntry),HttpStatus.FOUND);
 	}
 	@PutMapping("/changeUserDetails")
     public ResponseEntity<?> changeUserDetails(@RequestBody StockUser user) {
