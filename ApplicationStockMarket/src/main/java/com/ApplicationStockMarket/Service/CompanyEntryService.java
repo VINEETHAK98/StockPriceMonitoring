@@ -29,9 +29,12 @@ public class CompanyEntryService {
 	@Autowired
 	private StockUserService stockUserService;
 	
-	public List<CompanyEntry> getCompanyEntries(String name) {
-		//return userService.getJournalEntries(name);
-		return null;
+	public List<CompanyEntry> getCompanyEntries() {
+		  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String userName = authentication.getName();
+	        StockUser user = stockUserService.findByUserName(userName);
+		return user.getCompanyStockPriceEntries();
+		
 	}
 	
 	
@@ -48,7 +51,7 @@ public class CompanyEntryService {
 	        	 // CompanyEntry.setDate(LocalDateTime.now());
 	        	  CompanyEntry saved = companyEntryRepository.save(companyEntry);
 	             user.getCompanyStockPriceEntries().add(saved);
-	             stockUserService.postUserEntry(user);
+	             stockUserService.postNewUserEntry(user);
 	        } catch (Exception e) {
 	            throw new RuntimeException( e.getMessage());
 	        }

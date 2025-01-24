@@ -28,11 +28,11 @@ public class StockUserService {
 	@Autowired
 	StockUserRepository stockUserRepository;
 	
-	public StockUser addUser(StockUser stockUser) {
+	/*public StockUser addUser(StockUser stockUser) {
 		
 		StockUser s=stockUserRepository.save(stockUser);
 		return s;
-	}
+	}*/
 
     //private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -65,12 +65,12 @@ public class StockUserService {
    		return stockUserRepository.findAll();
    	}
    	
-  public boolean postUserEntry(StockUser user){
+  /*public boolean postUserEntry(StockUser user){
    		//user.setDate(LocalDateTime.now());
    		//journalEntry2.setId("1");
    		stockUserRepository.save(user);
    		return true;
-   	}
+   	}*/
    	public boolean postNewUserEntry(StockUser user){
    		//user.setDate(LocalDateTime.now());
    		//journalEntry2.setId("1");
