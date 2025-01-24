@@ -44,12 +44,13 @@ public class StockUserService {
     */
     
     
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder(12);
 
-    public StockUser register(StockUser user) {
-        user.setPassword(encoder.encode(user.getPassword()));
+    public String  register(StockUser user) {
+        user.setPassword(passwordEncoder .encode(user.getPassword()));
         stockUserRepository.save(user);
-        return user;
+        return jwtService.generateToken(user.getUserName());
+        //return user;
     }
 
     public String verify(StockUser user) {
@@ -60,7 +61,7 @@ public class StockUserService {
             return "fail";
         }
     }
-    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    //private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
    	public List<StockUser> getUserEntries() {
    		return stockUserRepository.findAll();
    	}
@@ -84,7 +85,7 @@ public class StockUserService {
        String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		oldUser.setUserName(user.getUserName());
-   		oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+   		oldUser.setPassword(passwordEncoder .encode(user.getPassword()));
    		stockUserRepository.save(oldUser);
    		return oldUser;
    		
@@ -104,15 +105,41 @@ public class StockUserService {
    		
    		return true;
    	}
+ 	public boolean deleteUserEntry(String name) {
+    	 //  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //String name = authentication.getName();
+    		StockUser oldUser=stockUserRepository.findByUserName(name);
+    		List<CompanyEntry> entries=oldUser.getCompanyStockPriceEntries();
+    		for(int i=0;i<entries.size();i++) {
+    			
+    			
+    			entries.remove(i);
+    		}
+    		
+    		stockUserRepository.deleteByUserName(name);
+    		
+    		return true;
+    	}
    	public StockUser findByUserName(String userName) {
    	        return stockUserRepository.findByUserName(userName);
    	    }
+ 	public StockUser findByUserName() {
+ 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+ 	       String name = authentication.getName();
+	        return stockUserRepository.findByUserName(name);
+	    }
    	public List<CompanyEntry> getCompanyEntries(){ 
    	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		return oldUser.getCompanyStockPriceEntries();
    	}
+   	public List<CompanyEntry> getCompanyEntries(String name){ 
+    	  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //String name = authentication.getName();
+    		StockUser oldUser=stockUserRepository.findByUserName(name);
+    		return oldUser.getCompanyStockPriceEntries();
+    	}
    	
 
 }

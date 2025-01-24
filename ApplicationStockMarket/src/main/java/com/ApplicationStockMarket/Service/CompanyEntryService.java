@@ -40,7 +40,7 @@ public class CompanyEntryService {
 	
 	
 		@Transactional
-	public void postCompanyEntry(CompanyEntry companyEntry) {
+	public StockUser postCompanyEntry(CompanyEntry companyEntry) {
 	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	        String userName = authentication.getName();
 	        try {
@@ -52,6 +52,7 @@ public class CompanyEntryService {
 	        	  CompanyEntry saved = companyEntryRepository.save(companyEntry);
 	             user.getCompanyStockPriceEntries().add(saved);
 	             stockUserService.postNewUserEntry(user);
+	             return user;
 	        } catch (Exception e) {
 	            throw new RuntimeException( e.getMessage());
 	        }
@@ -60,6 +61,22 @@ public class CompanyEntryService {
 	}
 	
 	public CompanyEntry putCompanyEntry(ObjectId id,CompanyEntry companyEntry) {
+		
+		   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String userName = authentication.getName();
+	        try {
+	        	 StockUser user = stockUserService.findByUserName(userName);
+	        	  if (user == null) {
+	                  throw new Exception("User not found with username: " + userName);
+	              }
+	        	 // CompanyEntry.setDate(LocalDateTime.now());
+	        	  CompanyEntry saved = companyEntryRepository.save(companyEntry);
+	             user.getCompanyStockPriceEntries().add(saved);
+	             stockUserService.postNewUserEntry(user);
+	             //return saved;
+	        } catch (Exception e) {
+	            throw new RuntimeException( e.getMessage());
+	        }
 		companyEntryRepository.save(companyEntry);
 		return companyEntry;
 		

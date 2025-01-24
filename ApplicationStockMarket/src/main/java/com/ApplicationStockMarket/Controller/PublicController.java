@@ -31,7 +31,7 @@ import com.ApplicationStockMarket.Service.StockUserService;
 public class PublicController {
 	@Autowired
 	StockUserService stockUserService;
-	@Autowired
+	/*@Autowired
     private RestTemplate restTemplate;
 	 @Autowired
 	    private RedisService redisService;
@@ -42,8 +42,8 @@ public class PublicController {
 	    @Value("${stock.api.key}")
 	    private String apiKey;
 	    @Value("${STOCK_API}")
-	    private String STOCK_API;
-	@GetMapping("/test")
+	    private String STOCK_API;*/
+	/*@GetMapping("/test")
 	public ResponseEntity<?> test(){
 		emailservice.sendEmail("vineethakomati@gmail.com", "Sentiment for previous week", "test");
 		return new ResponseEntity("Working",HttpStatus.OK);
@@ -54,20 +54,19 @@ public class PublicController {
 		//StockUser s=stockUserService.addUser(stockUser);
 		StockUser s=stockUserService.register(stockUser);
 		return new ResponseEntity(s,HttpStatus.OK);
-	}
+	}*/
 	  @PostMapping("/register")
-	    public StockUser register(@RequestBody StockUser user) {
-	        return stockUserService.register(user);
-
+	    public ResponseEntity<?> register(@RequestBody StockUser user) {
+	        return new ResponseEntity(stockUserService.register(user),HttpStatus.CREATED);
 	    }
 
 	    @PostMapping("/login")
-	    public String login(@RequestBody StockUser user) {
+	    public ResponseEntity<?> login(@RequestBody StockUser user) {
 
-	        return stockUserService.verify(user);
+	        return new ResponseEntity(stockUserService.verify(user),HttpStatus.FOUND);
 	    }
 
-		@GetMapping("/stockApi/{company}")
+	/*	@GetMapping("/stockApi/{company}")
 
 	    public StockResponse getStockDetails(@PathVariable String company) {
 			 StockResponse weatherResponse = redisService.get("Stock_price_of_AAPL", StockResponse.class);
@@ -98,5 +97,5 @@ public class PublicController {
 	
 	
 
-		}
+		}*/
 }

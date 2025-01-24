@@ -29,4 +29,6 @@ public class CompanyEntry {
 
       @NonNull
       private Double setPrice;
+      
+      private Double currentPrice;
 }
