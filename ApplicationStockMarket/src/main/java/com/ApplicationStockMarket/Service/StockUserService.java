@@ -2,6 +2,7 @@ package com.ApplicationStockMarket.Service;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,8 @@ public class StockUserService {
 	
 	@Autowired
 	StockUserRepository stockUserRepository;
+	@Autowired
+	CompanyEntryService companyEntryService;
 	
 	/*public StockUser addUser(StockUser stockUser) {
 		
@@ -90,6 +93,7 @@ public class StockUserService {
    		return oldUser;
    		
    	}
+  //forUser
    	public boolean deleteUserEntry() {
    	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        String name = authentication.getName();
@@ -105,6 +109,7 @@ public class StockUserService {
    		
    		return true;
    	}
+  //forADMIN
  	public boolean deleteUserEntry(String name) {
     	 //  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //String name = authentication.getName();
@@ -120,27 +125,69 @@ public class StockUserService {
     		
     		return true;
     	}
+ 	//forADMIN
    	public StockUser findByUserName(String userName) {
    	        return stockUserRepository.findByUserName(userName);
    	    }
+   	//forUser
  	public StockUser findByUserName() {
  		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
  	       String name = authentication.getName();
 	        return stockUserRepository.findByUserName(name);
 	    }
+ 	//forUser
    	public List<CompanyEntry> getCompanyEntries(){ 
    	   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        String name = authentication.getName();
    		StockUser oldUser=stockUserRepository.findByUserName(name);
    		return oldUser.getCompanyStockPriceEntries();
    	}
+   	//forADMIN
    	public List<CompanyEntry> getCompanyEntries(String name){ 
     	  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //String name = authentication.getName();
     		StockUser oldUser=stockUserRepository.findByUserName(name);
     		return oldUser.getCompanyStockPriceEntries();
     	}
-   	
+	public List<CompanyEntry> addCompanyEntries(CompanyEntry companyEntry ){ 
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	       String name = authentication.getName();
+	   		StockUser oldUser=stockUserRepository.findByUserName(name);
+	   		oldUser.getCompanyStockPriceEntries();
+		CompanyEntry newCompanyEntry=companyEntryService.postCompanyEntry(companyEntry);
+		oldUser.getCompanyStockPriceEntries().add(newCompanyEntry);
+  		return oldUser.getCompanyStockPriceEntries();
+  	}
+	public List<CompanyEntry> updateCompanyEntries(ObjectId id,CompanyEntry companyEntry ){ 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	       String name = authentication.getName();
+	   		StockUser oldUser=stockUserRepository.findByUserName(name);
+	   		List<CompanyEntry> list=oldUser.getCompanyStockPriceEntries();
+	   		for(int i=0;i<list.size();i++) {
+	   			if(list.get(i).getId()==id) {
+	   				companyEntryService.putCompanyEntry(id,companyEntry);
+	   				break;
+	   			}
+	   		}
+		//CompanyEntry newCompanyEntry=companyEntryService.putCompanyEntry(id,companyEntry);
+ 		return oldUser.getCompanyStockPriceEntries();
+ 	}
+	public List<CompanyEntry> deleateCompanyEntries(ObjectId id,CompanyEntry companyEntry ){ 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	       String name = authentication.getName();
+	   		StockUser oldUser=stockUserRepository.findByUserName(name);
+	   		List<CompanyEntry> list=oldUser.getCompanyStockPriceEntries();
+	   		for(int i=0;i<list.size();i++) {
+	   			if(list.get(i).getId()==id) {
+	   				companyEntryService.deleteCompanyEntry(id);
+	   				break;
+	   			}
+	   		}
+		//CompanyEntry newCompanyEntry=companyEntryService.putCompanyEntry(id,companyEntry);
+ 		return oldUser.getCompanyStockPriceEntries();
+ 	}
+  	
+  	
 
 }
 
