@@ -179,16 +179,17 @@ public class StockUserService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	       String name = authentication.getName();
 	   		StockUser oldUser=stockUserRepository.findByUserName(name);
-	   		List<CompanyEntry> list=oldUser.getCompanyStockPriceEntries();
+	   	/*	List<CompanyEntry> list=oldUser.getCompanyStockPriceEntries();
 	   		for(int i=0;i<list.size();i++) {
 	   			if(list.get(i).getId()==id) {
 	   				companyEntryService.deleteCompanyEntry(id);
 	   				break;
 	   			}
-	   		}
+	   		}*/
+	   		companyEntryService.deleteCompanyEntry(id);
 	   		stockUserRepository.save(oldUser);
 		//CompanyEntry newCompanyEntry=companyEntryService.putCompanyEntry(id,companyEntry);
- 		return oldUser.getCompanyStockPriceEntries();
+	   		return stockUserRepository.findByUserName(name).getCompanyStockPriceEntries();
  	}
   	
   	

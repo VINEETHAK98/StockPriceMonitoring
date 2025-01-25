@@ -1,5 +1,7 @@
 package com.ApplicationStockMarket.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import com.ApplicationStockMarket.Constants.Placeholders;
 import com.ApplicationStockMarket.Entity.StockResponse;
 import com.ApplicationStockMarket.Entity.StockUser;
+import com.ApplicationStockMarket.Repository.StockUserRepositoryImpl;
 import com.ApplicationStockMarket.Service.EmailService;
 import com.ApplicationStockMarket.Service.RedisService;
+import com.ApplicationStockMarket.Service.SchedulerService;
 import com.ApplicationStockMarket.Service.StockUserService;
 
 
@@ -31,6 +36,10 @@ import com.ApplicationStockMarket.Service.StockUserService;
 public class PublicController {
 	@Autowired
 	StockUserService stockUserService;
+	@Autowired
+	StockUserRepositoryImpl stockUserRepositoryImpl;
+	@Autowired
+	SchedulerService schedulerService;
 	/*@Autowired
     private RestTemplate restTemplate;
 	 @Autowired
@@ -43,13 +52,22 @@ public class PublicController {
 	    private String apiKey;
 	    @Value("${STOCK_API}")
 	    private String STOCK_API;*/
-	/*@GetMapping("/test")
-	public ResponseEntity<?> test(){
-		emailservice.sendEmail("vineethakomati@gmail.com", "Sentiment for previous week", "test");
-		return new ResponseEntity("Working",HttpStatus.OK);
+	@GetMapping("/test")
+	public ResponseEntity<?>test(){
+		//emailservice.sendEmail("vineethakomati@gmail.com", "Sentiment for previous week", "test");
+		/*List<StockUser> users = stockUserRepositoryImpl.getUserForSA();
+		return new ResponseEntity(users,HttpStatus.OK);*/
+		
+		
+		schedulerService.fetchUsersAndSendSaMail();
+		// emailservice.sendEmail("vineethakomati@gmail.com", "Sentiment for previous week", "test");
+		return new ResponseEntity("working",HttpStatus.OK);
+		
+		
+		
 	}
 	
-	@PutMapping("/add")
+	/*@PutMapping("/add")
 	public ResponseEntity<?> addUser(@RequestBody StockUser stockUser){
 		//StockUser s=stockUserService.addUser(stockUser);
 		StockUser s=stockUserService.register(stockUser);

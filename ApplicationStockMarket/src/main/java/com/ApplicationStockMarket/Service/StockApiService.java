@@ -5,13 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
 import com.ApplicationStockMarket.Constants.Placeholders;
 import com.ApplicationStockMarket.Entity.StockResponse;
-
+@Component
 public class StockApiService {
 	@Autowired
     private RestTemplate restTemplate;
